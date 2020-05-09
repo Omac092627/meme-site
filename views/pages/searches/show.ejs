@@ -1,0 +1,26 @@
+<main class="searchResults">
+  <div>
+    <% memes.forEach (meme => { %> 
+      <section class="bordersection">
+        <div>
+         "<%= meme.template_id %>"
+        </div>
+        <div id="name">
+          <%= meme.name %> 
+        </div>    
+        <div id="memeImage">
+          <img id="template_id" src="<%=meme.url%>">
+        </div>
+        <div id="width">
+         <%= meme.width%> 
+        </div>
+        <div id="height">
+           <%= meme.height %> 
+        </div>
+        <div id="username/password">
+          <%= meme.IMGFLIP_API_USERNAME %>
+          <%= meme.IMGFLIP_API_PASSWORD %>
+        </div>
+        </section>
+    <% }); %>
+</main>
