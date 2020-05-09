@@ -17,7 +17,6 @@ app.use(cors());
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended:true}));
 app.use(methodOverride('_method'));
-
 app.use(express.static('./public'));
 
 
@@ -25,6 +24,7 @@ app.use(express.static('./public'));
 app.get ('/', handleIndexPage);
 app.get('/new', searchMemes);
 app.get('/searches', resultsFromAPI);
+app.post('/add', addNewMeme);
 // app.get('/onememe/:id', handleOneMeme);
 // app.put('/update-meme/:id', handleUpdate);
 
@@ -71,6 +71,38 @@ function handleIndexPage (request, response)  {
     
   // }
 
+
+
+  function addNewMeme (request, response) {
+    // console.log('Book to be added: ', request.body);
+    let SQL = `
+      INSERT INTO memes (name, url, width, height, box_count)
+      VALUES($1, $2, $3, $4, $5)
+    `;
+  
+  let VALUES = [
+    request.body.name,
+    request.body.url,
+    request.body.width,
+    request.body.height,
+    request.body.box_count,
+  ];
+  
+  if ( ! (request.body.name || request.body.url || request.body.width || request.body.height || request.body.box_count) ) {
+    throw new Error('invalid input');
+  }
+  
+  client.query(SQL, VALUES)
+    .then(data => {
+      response.status(200).redirect('/');
+    })
+    .catch( error => {
+      console.error( error.message );
+    });
+  }
+
+
+
   function searchMemes(request, response) {
     response.status(200).render('pages/searches/new')
   };
@@ -91,37 +123,26 @@ function handleIndexPage (request, response)  {
 
 
   function resultsFromAPI (request, response) {
-    let url  = 'http://api.imgflip.com/get_memes';
-    let queryObject = {
-      q:`
-      ${request.body.template_id}
-      ${request.body.name}
-      ${request.body.url}
-      ${request.body.width}
-      ${request.body.height}
-      ${request.body.IMGFLIP_API_USERNAME}
-      ${request.body.IMGFLIP_API_PASSWORD}
-      `
-    };
+    let url = 'http://api.imgflip.com/get_memes';
+    
+
     superagent.get(url)
-    .query(queryObject)
-    .then(data => {
-      console.log(data);
-      let meme = data.body.items.map(memes => new Memes(memes));
-      response.status(200).render('pages/searches/show', {meme: meme});
+    .then(results => {
+      console.log(results);
+      let meme = results.body.data.memes.map(memes => new Memes(memes));
+      response.status(200).render('pages/searches/show', {meme:meme});
     });
   };
 
 
-
   function Memes(data) {
-    this.template_id = data.memes.template_id
-    this.name = data.memes.name;
-    this.url = data.memes.url;
-    this.width = data.memes.width;
-    this.height = data.memes.height;
-    this.box_count = data.memes.box_count;
+    this.name = data.name;
+    this.url = data.url;
+    this.width = data.width;
+    this.height = data.height;
+    this.box_count = data.box_count;
   }
+
 
 
   // This will force an error
@@ -151,3 +172,7 @@ app.get('/badthing', (request,response) => {
       startServer(PORT);
     })
     .catch(err => console.error(err));
+
+
+//     superagent.post(urlGoesHere).send( {} ) … and that object is an object where you’d have the user/pass props
+// In your server file you’d do that

@@ -1,26 +1,33 @@
-<main class="searchResults">
-  <div>
-    <% memes.forEach (meme => { %> 
-      <section class="bordersection">
-        <div>
-         "<%= meme.template_id %>"
-        </div>
-        <div id="name">
-          <%= meme.name %> 
-        </div>    
-        <div id="memeImage">
-          <img id="template_id" src="<%=meme.url%>">
-        </div>
-        <div id="width">
-         <%= meme.width%> 
-        </div>
-        <div id="height">
-           <%= meme.height %> 
-        </div>
-        <div id="username/password">
-          <%= meme.IMGFLIP_API_USERNAME %>
-          <%= meme.IMGFLIP_API_PASSWORD %>
-        </div>
-        </section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <%- include('../partials/header') %>
+
+  <main>
+
+    <% meme.forEach (data => { %> 
+
+    <section>
+      <li>
+        <%= data.template_id %>
+        <%= data.name %>
+       <img src= '<%= data.url%>'>
+        <%= data.width%>
+        <%= data.height%>
+        <%= data.box_count %>
+      </li>
+
+
+    </section>
     <% }); %>
+
 </main>
+<%- include('../partials/footer') %>
+
+</body>
+</html>
