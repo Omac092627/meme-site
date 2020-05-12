@@ -17,11 +17,14 @@
         <%= data.template_id %>
         <%= data.name %>
        <img src= '<%= data.url%>'>
-        <%= data.width%>
-        <%= data.height%>
-        <%= data.box_count %>
+  
       </li>
-
+      <form id="searchForm" method="post" action="/add"> 
+        <input type="hidden" name="template_id" value= "<%= data.template_id %>" />
+        <input type="hidden" name="name" value= "<%= data.name %>" />
+        <input type="hidden" name="url" value= "<%= data.url %>" />
+        <button  type="submit" id="selectThisBook">SELECT THIS MEME</button>
+      </form> 
 
     </section>
     <% }); %>

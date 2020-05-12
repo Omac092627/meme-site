@@ -76,19 +76,17 @@ function handleIndexPage (request, response)  {
   function addNewMeme (request, response) {
     // console.log('Book to be added: ', request.body);
     let SQL = `
-      INSERT INTO memes (name, url, width, height, box_count)
-      VALUES($1, $2, $3, $4, $5)
+      INSERT INTO memes (id, name, url)
+      VALUES($1, $2, $3)
     `;
   
   let VALUES = [
+    request.body.id,
     request.body.name,
     request.body.url,
-    request.body.width,
-    request.body.height,
-    request.body.box_count,
   ];
   
-  if ( ! (request.body.name || request.body.url || request.body.width || request.body.height || request.body.box_count) ) {
+  if ( ! (request.body.id || request.body.name || request.body.url) ) {
     throw new Error('invalid input');
   }
   
@@ -124,7 +122,7 @@ function handleIndexPage (request, response)  {
 
   function resultsFromAPI (request, response) {
     let url = 'http://api.imgflip.com/get_memes';
-    
+
 
     superagent.get(url)
     .then(results => {
